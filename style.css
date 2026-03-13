@@ -207,6 +207,7 @@ textarea:focus, select:focus {
     aspect-ratio: 1/1;
     object-fit: cover;
     background: #1e1e1e;
+    transition: opacity 0.3s ease;
 }
 
 .loading-overlay {
