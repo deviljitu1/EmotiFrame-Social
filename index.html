@@ -45,6 +45,14 @@
             </div>
 
             <div class="control-group">
+                <label>AI Model</label>
+                <select id="modelSelect">
+                    <option value="turbo">Turbo (Fast & Reliable)</option>
+                    <option value="flux">Flux (High Detail - Stills)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
                 <label>Frame Width</label>
                 <select id="frameSize">
                     <option value="40px">Classic Thick (40px)</option>
@@ -88,6 +96,7 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const frameContainer = document.getElementById('frameContainer');
         const frameSizeSelect = document.getElementById('frameSize');
+        const modelSelect = document.getElementById('modelSelect');
 
         let selectedStyle = "cinematic, professionally lit, masterpiece, high detail";
 
@@ -115,11 +124,17 @@
 
             generateBtn.disabled = true;
             loadingOverlay.style.display = 'flex';
+            loadingOverlay.querySelector('p').innerText = "Crafting your masterpiece...";
 
-            const brandText = "Include the brand text 'EmotiFrame' in a premium elegant typography at the bottom. DO NOT use the word 'Studio'.";
+            const selectedModel = modelSelect.value;
+            const brandText = "Include brand text 'EmotiFrame'. Elegant luxury style.";
             const fullPrompt = encodeURIComponent(`${userPrompt}, ${selectedStyle}, ${brandText}`);
             const seed = Math.floor(Math.random() * 1000000);
-            const imageUrl = `https://image.pollinations.ai/prompt/${fullPrompt}?width=1024&height=1024&seed=${seed}&model=flux&nologo=true`;
+            
+            // Build URL
+            const imageUrl = `https://image.pollinations.ai/prompt/${fullPrompt}?width=1024&height=1024&seed=${seed}&model=${selectedModel}&nologo=true`;
+
+            console.log("Generating with URL:", imageUrl);
 
             // Wait for image to load
             const img = new Image();
@@ -128,8 +143,9 @@
                 loadingOverlay.style.display = 'none';
                 generateBtn.disabled = false;
             };
-            img.onerror = () => {
-                alert("Failed to generate image. Try again.");
+            img.onerror = (err) => {
+                console.error("Pollinations Error:", err);
+                alert("The AI server is busy or timed out. Please try the 'Turbo' model or a simpler description.");
                 loadingOverlay.style.display = 'none';
                 generateBtn.disabled = false;
             };
